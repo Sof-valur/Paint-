@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
     Image piporin;
+    QImage imageqt;
 
 
     void mouseMoveEvent(QMouseEvent *ev) override;
