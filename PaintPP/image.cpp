@@ -31,6 +31,12 @@ Image::Image()
 
 }
 
+Image::Image(Image *nueva)
+    : m_width(nueva->m_width),m_height(nueva->m_height), m_colors(nueva->m_colors)
+{
+
+}
+
 Image::~Image()
 {
 
@@ -221,4 +227,51 @@ int Image::width() const
 int Image::height() const
 {
     return m_height;
+}
+void Image::setWidth(int newWidth)
+{
+    m_width = newWidth;
+}
+
+void Image::setHeight(int newHeight)
+{
+    m_height = newHeight;
+}
+Image Image::horizontalScaling(float factor)
+{
+    if(factor == 0){
+        return nullptr;
+   }
+    //update properties
+    setWidth(width()*factor);
+
+    Image newimage = Image(height(),width());
+
+    //load data
+
+
+    for(int fila = 0; fila < height(); fila++){
+       for(int newi=0,oldi=0; newi < width(); newi++, oldi++){
+
+           if(factor < 1){
+               newimage.SetColor(this->GetColor(oldi, fila), newi,fila);
+               oldi += 1/factor -1;
+
+           }else{
+               return nullptr;
+
+           }
+    }
+       return newimage;
+
+}
+
+return nullptr;
+
+
+
+
+
+
+
 }

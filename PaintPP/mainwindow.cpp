@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QMouseEvent>
+#include <iostream>
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -32,6 +33,8 @@ void MainWindow::on_Load_Image_clicked()
     image.load(filename);
 
     MainWindow::piporin.Read(filename.toStdString().c_str());
+    std::cout<< MainWindow::piporin.width()<<"  "<< MainWindow::piporin.height()<<std::endl;
+
     //image = image.scaledToWidth(ui->Image_lbl->width(),Qt::SmoothTransformation);
     ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(image));
@@ -40,7 +43,10 @@ void MainWindow::on_Load_Image_clicked()
 
 void MainWindow::on_Save_image_clicked()
 {
-    MainWindow::piporin.SetColor(Color(0,0,0),300,300);
+   // MainWindow::piporin.SetColor(Color(0,0,0),300,300);
+    MainWindow::piporin =  MainWindow::piporin.horizontalScaling(1/3);
+
+    std::cout<< MainWindow::piporin.width()<<"  "<< MainWindow::piporin.height()<<std::endl;
     MainWindow::piporin.Export("piporin.bmp");
 }
 

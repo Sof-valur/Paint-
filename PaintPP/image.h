@@ -17,6 +17,7 @@ class Image
 public:
     Image(int wide, int height);
     Image();
+    Image(Image* nueva);
     ~Image();
 
     Color GetColor(int x, int y) const;
@@ -28,6 +29,15 @@ public:
     int width() const;
 
     int height() const;
+
+    void verticalScaling(float f );
+    Image horizontalScaling(float f);
+
+
+
+    void setWidth(int newWidth);
+
+    void setHeight(int newHeight);
 
 private:
     int m_width;

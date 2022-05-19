@@ -18,7 +18,10 @@ int main(int argc, char *argv[])
 
         }
     }
+
+
     piporin.Export("image1.bmp");
+
 
     //Image copy(0,0);
 
