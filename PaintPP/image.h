@@ -16,6 +16,7 @@ class Image
 {
 public:
     Image(int wide, int height);
+    Image();
     ~Image();
 
     Color GetColor(int x, int y) const;
@@ -23,6 +24,10 @@ public:
 
     void Read(const char* path);
     void Export(const char* path) const;
+
+    int width() const;
+
+    int height() const;
 
 private:
     int m_width;

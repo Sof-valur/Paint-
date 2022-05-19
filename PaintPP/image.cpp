@@ -3,7 +3,7 @@
 #include <fstream>
 
 Color::Color(   )
-    :r(0),g(0),b(0)
+    :r(255),g(255),b(255)
 {
 
 }
@@ -21,6 +21,12 @@ Color::~Color()
 
 Image::Image(int wide, int height)
     :m_width(wide), m_height(height),m_colors(std::vector<Color>(wide*height))
+{
+
+}
+
+Image::Image()
+    :m_width(0),m_height(0),m_colors(std::vector<Color>(0))
 {
 
 }
@@ -205,4 +211,14 @@ void Image::Export(const char *path) const
     std::cout<<"File created\n";
 
 
+}
+
+int Image::width() const
+{
+    return m_width;
+}
+
+int Image::height() const
+{
+    return m_height;
 }
