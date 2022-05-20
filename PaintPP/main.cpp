@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
         }
     }
-    std::cout<<piporin.GetColor(5,5).r<<", "<<piporin.GetColor(5,5).g<<", "<<piporin.GetColor(5,5).b<<std::endl;
+    //std::cout<<piporin.GetColor(5,5).r<<", "<<piporin.GetColor(5,5).g<<", "<<piporin.GetColor(5,5).b<<std::endl;
     piporin.Export("image1.bmp");
     //std::cout<<piporin.GetColor(5,5).r<<", "<<piporin.GetColor(5,5).g<<", "<<piporin.GetColor(5,5).b<<std::endl;
 

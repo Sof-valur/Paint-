@@ -3,14 +3,14 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 
+//start the main window
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //this->setMouseTracking(false);
     ui->Image_lbl->setMouseTracking(true);
-    ui->verticalFrame_2->setStyleSheet("background-color: rgb(255,255,255");
 
 }
 
@@ -19,6 +19,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+//Check the mouse position when clicked
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
@@ -29,9 +31,11 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
    if(ev->pos().x()<imageqt.width() && ev->pos().x()>0 && ev->pos().y()<imageqt.height() && ev->pos().y()>0){
        MainWindow::set_color(ev->pos().x(),ev->pos().y());
        imageqt.setPixelColor(ev->pos().x(),ev->pos().y(),QColor(0,0,0));
+       ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
        QWidget::mouseMoveEvent(ev);
    }
    else{
+       //error case
        QMessageBox warning;
        warning.setText("Fuera de margen");
        warning.exec();
@@ -39,37 +43,55 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 }
 
 
+//Loads the bitmap into the program
+
 void MainWindow::on_Load_Image_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this,tr("choose"),"",tr("Images(*.png *.jpg *.jpeg *.bmp)"));
+
+    QString filename = QFileDialog::getOpenFileName(this,tr("choose"),"",tr("Images(*.bmp)"));
 
     imageqt.load(filename);
 
     MainWindow::piporin.Read(filename.toStdString().c_str());
-    //image = image.scaledToWidth(ui->Image_lbl->width(),Qt::SmoothTransformation);
+
     ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
 }
 
+//Saves the image in a directory
 
 void MainWindow::on_Save_image_clicked()
 {
-    //MainWindow::piporin.SetColor(Color(0,0,0),300,300);
+
     QFileDialog save_file;
+    save_file.setOptions(QFileDialog::DontUseNativeDialog);
     save_file.setDefaultSuffix(".bmp");
-    std::string filename = save_file.getSaveFileName().toStdString();
+    std::string filename = save_file.getSaveFileName(this,tr("save"),"",tr("Images(*.bmp)")).toStdString();
     qDebug()<<filename.c_str();
     MainWindow::piporin.Export(filename.c_str());
-    QMessageBox warning;
-    warning.setText("Imagen guardada");
-    warning.exec();
+    if(!filename.empty()){
+        QMessageBox warning;
+        warning.setText("Imagen guardada");
+        warning.exec();
+    }else{
+        //error case
+        QMessageBox warning;
+        warning.setText("No se pudo guardar la imagen");
+        warning.exec();
+    }
+
 }
+
+//Changes a pixel color
 
 void MainWindow::set_color(int x, int y)
 {
+
     MainWindow::piporin.SetColor(Color(0,0,0),x,y);
 }
 
+
+//Creates a new bitmap defined by the user
 
 void MainWindow::on_New_Image_clicked()
 {
@@ -90,11 +112,11 @@ void MainWindow::on_New_Image_clicked()
         imageqt.load("new_piporin.bmp");
 
         MainWindow::piporin.Read("new_piporin.bmp");
-        //image = image.scaledToWidth(ui->Image_lbl->width(),Qt::SmoothTransformation);
-        //ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+
+        ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
         ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
     }else{
-
+        //error case
         QMessageBox warning;
         warning.setText("Elija la dimension deseada");
         warning.exec();
@@ -102,5 +124,13 @@ void MainWindow::on_New_Image_clicked()
 
 
 
+}
+
+
+void MainWindow::on_Color_bttn_clicked()
+{
+    QColorDialog color;
+    color.getColor();
+    qDebug()<<"a";
 }
 

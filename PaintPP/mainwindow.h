@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QColorDialog>
 #include "image.h"
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,8 @@ private slots:
     void set_color(int x, int y);
 
     void on_New_Image_clicked();
+
+    void on_Color_bttn_clicked();
 
 private:
     Ui::MainWindow *ui;

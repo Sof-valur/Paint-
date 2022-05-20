@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 
+//Constructor for color
+
 Color::Color(   )
     :r(1.0),g(1.0),b(1.0)
 {
@@ -18,6 +20,8 @@ Color::~Color()
 {
 
 }
+
+//Constructor for image
 
 Image::Image(int wide, int height)
     :m_width(wide), m_height(height),m_colors(std::vector<Color>(wide*height))
@@ -36,10 +40,14 @@ Image::~Image()
 
 }
 
+//Returns a Color struct from the loaded bitmap at x,y pixel
+
 Color Image::GetColor(int x, int y) const
 {
     return m_colors[y*m_width+x];
 }
+
+//sets the Color struct in a bitmap for x,y pixel
 
 void Image::SetColor(const Color &color, int x, int y)
 {
@@ -47,6 +55,8 @@ void Image::SetColor(const Color &color, int x, int y)
     m_colors[y*m_width+x].g= color.g;
     m_colors[y*m_width+x].b= color.b;
 }
+
+//loads a bitmap from a directory
 
 void Image::Read(const char *path)
 {
@@ -97,7 +107,9 @@ void Image::Read(const char *path)
     f.close();
     std::cout<<"File Read!"<<std::endl;
 }
+
 //create the bitmap file
+
 void Image::Export(const char *path) const
 {
     std::ofstream f;
@@ -204,7 +216,7 @@ void Image::Export(const char *path) const
         f.write(reinterpret_cast<char*>(bmpPad),paddingAmmount);
     }
 
-    //
+
 
     f.close();
 
@@ -213,10 +225,14 @@ void Image::Export(const char *path) const
 
 }
 
+//returns the width of the bitmap
+
 int Image::width() const
 {
     return m_width;
 }
+
+//returns the height of the bitmap
 
 int Image::height() const
 {
