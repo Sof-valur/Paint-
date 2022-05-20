@@ -20,6 +20,9 @@ public:
 
     Image piporin;
     QImage imageqt;
+    bool doDraw, doErrase;
+    Color paintColor;
+    int brush;
 
 
     void mouseMoveEvent(QMouseEvent *ev) override;
@@ -33,6 +36,10 @@ private slots:
     void on_New_Image_clicked();
 
     void on_Color_bttn_clicked();
+
+    void on_Draw_clicked();
+
+    void on_horizontalSlider_sliderReleased();
 
 private:
     Ui::MainWindow *ui;

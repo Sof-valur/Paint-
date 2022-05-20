@@ -59,9 +59,9 @@ background-color: rgb(136, 138, 133);
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>0</y>
+      <y>20</y>
       <width>191</width>
-      <height>311</height>
+      <height>361</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -72,6 +72,13 @@ background-color: rgb(136, 138, 133);
 border-color: rgb(46, 52, 54);</string>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
+     <item row="10" column="0">
+      <widget class="QCheckBox" name="Draw">
+       <property name="text">
+        <string>Draw</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QFrame" name="formFrame">
        <layout class="QGridLayout" name="gridLayout">
@@ -124,19 +131,58 @@ border-color: rgb(46, 52, 54);</string>
        </layout>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="11" column="0">
+      <widget class="QCheckBox" name="Errase">
+       <property name="text">
+        <string>Errase</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="5" column="0">
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="Color_bttn">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label">
          <property name="text">
-          <string>Select Color</string>
+          <string>Brush Size</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Input_bttn">
-         <property name="text">
-          <string>Select Input</string>
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="maximum">
+          <number>5</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QPlainTextEdit" name="plainTextEdit">
+         <property name="maximumSize">
+          <size>
+           <width>35</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="plainText">
+          <string notr="true"/>
          </property>
         </widget>
        </item>
@@ -167,18 +213,12 @@ border-color: rgb(46, 52, 54);</string>
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="Color_bttn">
+       <property name="text">
+        <string>Select Color</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
     </layout>
    </widget>
