@@ -238,3 +238,13 @@ int Image::height() const
 {
     return m_height;
 }
+
+const std::vector<Color> &Image::colors() const
+{
+    return m_colors;
+}
+
+void Image::setColors(const std::vector<Color> &newColors)
+{
+    m_colors = newColors;
+}

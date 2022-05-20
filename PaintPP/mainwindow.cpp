@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->Image_lbl->setMouseTracking(true);
+    MainWindow::doDraw = false;
+    MainWindow::doErrase = false;
+    MainWindow::paintColor = Color(0,0,0);
+    MainWindow::brush = 0;
 
 }
 
@@ -24,13 +28,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-   qDebug()<<ev->pos().x()<<","<<ev->pos().y();
-
 
    qDebug()<<"drawing in"<<ev->pos().x()<<","<<ev->pos().y();
+   if(MainWindow::doDraw || MainWindow::doErrase){
    if(ev->pos().x()<imageqt.width() && ev->pos().x()>0 && ev->pos().y()<imageqt.height() && ev->pos().y()>0){
        MainWindow::set_color(ev->pos().x(),ev->pos().y());
-       imageqt.setPixelColor(ev->pos().x(),ev->pos().y(),QColor(0,0,0));
        ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
        QWidget::mouseMoveEvent(ev);
    }
@@ -39,6 +41,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
        QMessageBox warning;
        warning.setText("Fuera de margen");
        warning.exec();
+   }
    }
 }
 
@@ -86,8 +89,14 @@ void MainWindow::on_Save_image_clicked()
 
 void MainWindow::set_color(int x, int y)
 {
+    for(int tempy =y;tempy<=y+MainWindow::brush;tempy++ ){
+        for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
 
-    MainWindow::piporin.SetColor(Color(0,0,0),x,y);
+            imageqt.setPixelColor(tempx,tempy,QColor((int)255*MainWindow::paintColor.r,(int)255*MainWindow::paintColor.g,(int)255*MainWindow::paintColor.b));
+            MainWindow::piporin.SetColor(Color(MainWindow::paintColor.r,MainWindow::paintColor.g,MainWindow::paintColor.b),tempx,tempy);
+        }
+    }
+
 }
 
 
@@ -130,7 +139,28 @@ void MainWindow::on_New_Image_clicked()
 void MainWindow::on_Color_bttn_clicked()
 {
     QColorDialog color;
-    color.getColor();
-    qDebug()<<"a";
+    QColor a = color.getColor();
+    qDebug()<<a.redF()<<", "<<a.greenF()<<", "<<a.blueF();
+    MainWindow::paintColor = Color(a.redF(),a.greenF(),a.blueF());
+}
+
+
+
+
+
+void MainWindow::on_Draw_clicked()
+{
+    if(MainWindow::doDraw){
+        MainWindow::doDraw = false;
+    }else{
+        MainWindow::doDraw = true;
+    }
+}
+
+
+void MainWindow::on_horizontalSlider_sliderReleased()
+{
+    MainWindow::brush = ui->horizontalSlider->value();
+    ui->plainTextEdit->setPlainText(QString::fromStdString( std::to_string(MainWindow::brush)));
 }
 
