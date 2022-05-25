@@ -32,6 +32,7 @@ public:
     const std::vector<Color> &colors() const;
     void setColors(const std::vector<Color> &newColors);
 
+
 private:
     int m_width;
     int m_height;

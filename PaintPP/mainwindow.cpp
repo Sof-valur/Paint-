@@ -11,11 +11,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->Image_lbl->setMouseTracking(true);
-    MainWindow::doDraw = false;
-    MainWindow::doErrase = false;
+    doDraw = false;
+    doErrase = false;
+    doFill =false;
     MainWindow::paintColor = Color(0,0,0);
     MainWindow::brush = 0;
     ui->plainTextEdit->setPlainText(0);
+    //std::vector<Color> titor = MainWindow::piporin.colors();
 
 }
 
@@ -29,45 +31,76 @@ void MainWindow::Vert_Rot()
 {
 
 
-    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+    Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     int i = 0;
-    for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
-        for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+    for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
+        for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
 
-            temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+            temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
 
         }
         i++;
     }
 
     temp.Export("temp.bmp");
-    MainWindow::piporin = temp;
+    MainWindow::bmpToWork = temp;
     MainWindow::unedit = temp;
     imageqt.load("temp.bmp");
-    ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
 }
 
 void MainWindow::Hort_Rot()
 {
-    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+    Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     int i = 0;
-    for(int x =MainWindow::piporin.width()-1;x>=0;x-- ){
-        for(int y =0;y<MainWindow::piporin.height()-1;y++ ){
+    for(int x =MainWindow::bmpToWork.width()-1;x>=0;x-- ){
+        for(int y =0;y<MainWindow::bmpToWork.height()-1;y++ ){
 
-            temp.SetColor(MainWindow::piporin.GetColor(i,y),x,y);
+            temp.SetColor(MainWindow::bmpToWork.GetColor(i,y),x,y);
 
         }
         i++;
     }
 
     temp.Export("temp.bmp");
-    MainWindow::piporin = temp;
+    MainWindow::bmpToWork = temp;
     MainWindow::unedit = temp;
     imageqt.load("temp.bmp");
-    ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
 
+}
+
+void MainWindow::goFill(int x, int y)
+{
+    BFS bfsOBJ;
+
+    MainWindow::bmpToWork = bfsOBJ.flood_fill(MainWindow::bmpToWork,positions(x,y),MainWindow::paintColor);
+    qDebug()<<"after bfs"<<"\n";
+    MainWindow::unedit = MainWindow::bmpToWork;
+    MainWindow::refreshDisplay();
+    doFill = false;
+    ui->Fill->setCheckState(Qt::Unchecked);
+
+}
+
+void MainWindow::refreshDisplay()
+{
+    Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+    int i = 0;
+    for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
+        for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
+
+            temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
+
+        }
+        i++;
+    }
+
+    temp.Export("temp.bmp");
+
+    imageqt.load("temp.bmp");
 }
 
 //Check the mouse position when clicked
@@ -75,8 +108,12 @@ void MainWindow::Hort_Rot()
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
 
-   qDebug()<<"drawing in"<<ev->pos().x()<<","<<ev->pos().y();
-   if(MainWindow::doDraw || MainWindow::doErrase){
+   //qDebug()<<"drawing in"<<ev->pos().x()<<","<<ev->pos().y();
+   if(doFill){
+        MainWindow::goFill(ev->pos().x(),ev->pos().y());
+   }
+
+   if(doDraw ||  doErrase){
    if(ev->pos().x()<imageqt.width() && ev->pos().x()>0 && ev->pos().y()<imageqt.height() && ev->pos().y()>0){
        MainWindow::set_color(ev->pos().x(),ev->pos().y());
        ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
@@ -101,22 +138,22 @@ void MainWindow::on_Load_Image_clicked()
 
     imageqt.load(filename);
 
-    MainWindow::piporin.Read(filename.toStdString().c_str());
-    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+    MainWindow::bmpToWork.Read(filename.toStdString().c_str());
+    Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
         int i = 0;
-        for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
-            for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+        for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
+            for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
 
-                temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+                temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
 
             }
             i++;
         }
 
-        MainWindow::piporin = temp;
+        MainWindow::bmpToWork = temp;
         MainWindow::unedit = temp;
 
-    ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
 }
 
@@ -130,23 +167,23 @@ void MainWindow::on_Save_image_clicked()
     save_file.setDefaultSuffix(".bmp");
     std::string filename = save_file.getSaveFileName(this,tr("save"),"",tr("Images(*.bmp)")).toStdString();
     qDebug()<<filename.c_str();
-    //MainWindow::Vert_Rot();
+
 
     if(!filename.empty()){
-        Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+        Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
             int i = 0;
-            for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
-                for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+            for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
+                for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
 
-                    temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+                    temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
 
                 }
                 i++;
             }
 
-            MainWindow::piporin = temp;
+            MainWindow::bmpToWork = temp;
             MainWindow::unedit = temp;
-        MainWindow::piporin.Export(filename.c_str());
+        MainWindow::bmpToWork.Export(filename.c_str());
         QMessageBox warning;
         warning.setText("Imagen guardada");
         warning.exec();
@@ -168,7 +205,7 @@ void MainWindow::set_color(int x, int y)
             for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
 
                 imageqt.setPixelColor(tempx,tempy,QColor((int)255*MainWindow::unedit.GetColor(tempx,tempy).r,(int)255*MainWindow::unedit.GetColor(tempx,tempy).g,(int)255*MainWindow::unedit.GetColor(tempx,tempy).b));
-                MainWindow::piporin.SetColor(Color(MainWindow::unedit.GetColor(tempx,tempy).r,MainWindow::unedit.GetColor(tempx,tempy).g,MainWindow::unedit.GetColor(tempx,tempy).b),tempx,tempy);
+                MainWindow::bmpToWork.SetColor(Color(MainWindow::unedit.GetColor(tempx,tempy).r,MainWindow::unedit.GetColor(tempx,tempy).g,MainWindow::unedit.GetColor(tempx,tempy).b),tempx,tempy);
 
     }
         }
@@ -178,7 +215,7 @@ void MainWindow::set_color(int x, int y)
         for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
 
             imageqt.setPixelColor(tempx,tempy,QColor((int)255*MainWindow::paintColor.r,(int)255*MainWindow::paintColor.g,(int)255*MainWindow::paintColor.b));
-            MainWindow::piporin.SetColor(Color(MainWindow::paintColor.r,MainWindow::paintColor.g,MainWindow::paintColor.b),tempx,tempy);
+            MainWindow::bmpToWork.SetColor(Color(MainWindow::paintColor.r,MainWindow::paintColor.g,MainWindow::paintColor.b),tempx,tempy);
         }
     }
 }
@@ -193,21 +230,21 @@ void MainWindow::on_New_Image_clicked()
         std::string width = ui->Width_num->toPlainText().toStdString();
         std::string height= ui->Height_num->toPlainText().toStdString();
         qDebug()<<width.c_str()<<" "<<height.c_str();
-        MainWindow::piporin = Image(std::stoi(width),std::stoi(height));
+        MainWindow::bmpToWork = Image(std::stoi(width),std::stoi(height));
         for(int y=0;y<std::stoi(height);y++){
             for(int x=0;x<std::stoi(width);x++){
-                MainWindow::piporin.SetColor(Color(1.0,1.0,1.0),x,y);
+                MainWindow::bmpToWork.SetColor(Color(1.0,1.0,1.0),x,y);
             }
         }
 
 
-        MainWindow::piporin.Export("new_piporin.bmp");
+        MainWindow::bmpToWork.Export("new_piporin.bmp");
 
         imageqt.load("new_piporin.bmp");
 
-        MainWindow::piporin.Read("new_piporin.bmp");
+        //MainWindow::piporin.Read("new_piporin.bmp");
 
-        ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+        ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
         ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
     }else{
         //error case
@@ -220,7 +257,7 @@ void MainWindow::on_New_Image_clicked()
 
 }
 
-
+//opens the color pickewr and sets the drawing color
 void MainWindow::on_Color_bttn_clicked()
 {
     QColorDialog color;
@@ -263,5 +300,15 @@ void MainWindow::on_Errase_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     MainWindow::Vert_Rot();
+}
+
+
+void MainWindow::on_Fill_clicked()
+{
+    if(MainWindow::doFill){
+            MainWindow::doFill = false;
+        }else{
+            MainWindow::doFill = true;
+        }
 }
 
