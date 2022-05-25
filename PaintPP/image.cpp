@@ -88,6 +88,7 @@ void Image::Read(const char *path)
 
     m_colors.resize(m_width*m_height);
 
+
     const int paddingAmmount = ((4-(m_width*3)%4)%4);
 
     for (int y=0;y<m_height;y++){

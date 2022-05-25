@@ -19,11 +19,14 @@ public:
     ~MainWindow();
 
     Image piporin;
+    Image unedit;
     QImage imageqt;
     bool doDraw, doErrase;
     Color paintColor;
     int brush;
 
+    void Vert_Rot();
+    void Hort_Rot();
 
     void mouseMoveEvent(QMouseEvent *ev) override;
 private slots:
@@ -40,6 +43,11 @@ private slots:
     void on_Draw_clicked();
 
     void on_horizontalSlider_sliderReleased();
+
+
+    void on_Errase_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

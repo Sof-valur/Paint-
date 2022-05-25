@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     MainWindow::doErrase = false;
     MainWindow::paintColor = Color(0,0,0);
     MainWindow::brush = 0;
+    ui->plainTextEdit->setPlainText(0);
 
 }
 
@@ -22,6 +23,51 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::Vert_Rot()
+{
+
+
+    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+    int i = 0;
+    for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
+        for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+
+            temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+
+        }
+        i++;
+    }
+
+    temp.Export("temp.bmp");
+    MainWindow::piporin = temp;
+    MainWindow::unedit = temp;
+    imageqt.load("temp.bmp");
+    ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
+}
+
+void MainWindow::Hort_Rot()
+{
+    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+    int i = 0;
+    for(int x =MainWindow::piporin.width()-1;x>=0;x-- ){
+        for(int y =0;y<MainWindow::piporin.height()-1;y++ ){
+
+            temp.SetColor(MainWindow::piporin.GetColor(i,y),x,y);
+
+        }
+        i++;
+    }
+
+    temp.Export("temp.bmp");
+    MainWindow::piporin = temp;
+    MainWindow::unedit = temp;
+    imageqt.load("temp.bmp");
+    ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
+    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
+
 }
 
 //Check the mouse position when clicked
@@ -56,6 +102,19 @@ void MainWindow::on_Load_Image_clicked()
     imageqt.load(filename);
 
     MainWindow::piporin.Read(filename.toStdString().c_str());
+    Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+        int i = 0;
+        for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
+            for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+
+                temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+
+            }
+            i++;
+        }
+
+        MainWindow::piporin = temp;
+        MainWindow::unedit = temp;
 
     ui->Image_lbl->resize(MainWindow::piporin.width(),MainWindow::piporin.height());
     ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
@@ -71,8 +130,23 @@ void MainWindow::on_Save_image_clicked()
     save_file.setDefaultSuffix(".bmp");
     std::string filename = save_file.getSaveFileName(this,tr("save"),"",tr("Images(*.bmp)")).toStdString();
     qDebug()<<filename.c_str();
-    MainWindow::piporin.Export(filename.c_str());
+    //MainWindow::Vert_Rot();
+
     if(!filename.empty()){
+        Image temp =Image(MainWindow::piporin.width(),MainWindow::piporin.height());
+            int i = 0;
+            for(int y =MainWindow::piporin.height()-1;y>=0;y-- ){
+                for(int x =0;x<MainWindow::piporin.width()-1;x++ ){
+
+                    temp.SetColor(MainWindow::piporin.GetColor(x,i),x,y);
+
+                }
+                i++;
+            }
+
+            MainWindow::piporin = temp;
+            MainWindow::unedit = temp;
+        MainWindow::piporin.Export(filename.c_str());
         QMessageBox warning;
         warning.setText("Imagen guardada");
         warning.exec();
@@ -89,6 +163,17 @@ void MainWindow::on_Save_image_clicked()
 
 void MainWindow::set_color(int x, int y)
 {
+    if(MainWindow::doErrase){
+        for(int tempy =y;tempy<=y+MainWindow::brush;tempy++ ){
+            for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
+
+                imageqt.setPixelColor(tempx,tempy,QColor((int)255*MainWindow::unedit.GetColor(tempx,tempy).r,(int)255*MainWindow::unedit.GetColor(tempx,tempy).g,(int)255*MainWindow::unedit.GetColor(tempx,tempy).b));
+                MainWindow::piporin.SetColor(Color(MainWindow::unedit.GetColor(tempx,tempy).r,MainWindow::unedit.GetColor(tempx,tempy).g,MainWindow::unedit.GetColor(tempx,tempy).b),tempx,tempy);
+
+    }
+        }
+    }else{
+
     for(int tempy =y;tempy<=y+MainWindow::brush;tempy++ ){
         for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
 
@@ -96,7 +181,7 @@ void MainWindow::set_color(int x, int y)
             MainWindow::piporin.SetColor(Color(MainWindow::paintColor.r,MainWindow::paintColor.g,MainWindow::paintColor.b),tempx,tempy);
         }
     }
-
+}
 }
 
 
@@ -162,5 +247,21 @@ void MainWindow::on_horizontalSlider_sliderReleased()
 {
     MainWindow::brush = ui->horizontalSlider->value();
     ui->plainTextEdit->setPlainText(QString::fromStdString( std::to_string(MainWindow::brush)));
+}
+
+
+void MainWindow::on_Errase_clicked()
+{
+    if(MainWindow::doErrase){
+        MainWindow::doErrase = false;
+    }else{
+        MainWindow::doErrase = true;
+    }
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    MainWindow::Vert_Rot();
 }
 
