@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
     MainWindow::paintColor = Color(0,0,0);
     MainWindow::brush = 0;
     ui->plainTextEdit->setPlainText(0);
-    //std::vector<Color> titor = MainWindow::piporin.colors();
 
 }
 
@@ -27,7 +26,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::Vert_Rot()
+void MainWindow::vertRot()
 {
 
 
@@ -42,15 +41,13 @@ void MainWindow::Vert_Rot()
         i++;
     }
 
-    temp.Export("temp.bmp");
+
     MainWindow::bmpToWork = temp;
     MainWindow::unedit = temp;
-    imageqt.load("temp.bmp");
-    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
-    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
+    MainWindow::refreshDisplay();
 }
 
-void MainWindow::Hort_Rot()
+void MainWindow::horRot()
 {
     Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     int i = 0;
@@ -63,12 +60,31 @@ void MainWindow::Hort_Rot()
         i++;
     }
 
-    temp.Export("temp.bmp");
+
     MainWindow::bmpToWork = temp;
     MainWindow::unedit = temp;
-    imageqt.load("temp.bmp");
-    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
-    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
+    MainWindow::refreshDisplay();
+
+}
+
+void MainWindow::rightRot()
+{
+    Image temp =Image(MainWindow::bmpToWork.height(),MainWindow::bmpToWork.width());
+    int i = 0;
+    int j = 0;
+    for(int x =0;x<MainWindow::bmpToWork.height()-1;x++ ){
+        for( int y =MainWindow::bmpToWork.width()-1;y>=0;y--){
+
+            temp.SetColor(MainWindow::bmpToWork.GetColor(i,j),x,y);
+            i++;
+        }
+        i=0;
+        j++;
+    }
+
+    MainWindow::bmpToWork = temp;
+    MainWindow::unedit = temp;
+    MainWindow::refreshDisplay();
 
 }
 
@@ -101,6 +117,20 @@ void MainWindow::refreshDisplay()
     temp.Export("temp.bmp");
 
     imageqt.load("temp.bmp");
+    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
+}
+
+void MainWindow::grayScale()
+{
+    Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+    for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
+        for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
+            temp.SetColor(Color((MainWindow::bmpToWork.GetColor(x,y).r*0.3),(MainWindow::bmpToWork.GetColor(x,y).g*0.59),(MainWindow::bmpToWork.GetColor(x,y).b*0.11)),x,y);
+        }
+    }
+    MainWindow::bmpToWork = temp;
+    refreshDisplay();
 }
 
 //Check the mouse position when clicked
@@ -109,9 +139,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
 
    //qDebug()<<"drawing in"<<ev->pos().x()<<","<<ev->pos().y();
-   if(doFill){
-        MainWindow::goFill(ev->pos().x(),ev->pos().y());
-   }
 
    if(doDraw ||  doErrase){
    if(ev->pos().x()<imageqt.width() && ev->pos().x()>0 && ev->pos().y()<imageqt.height() && ev->pos().y()>0){
@@ -128,6 +155,16 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
    }
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *ev)
+{
+    if(doErrase&&doFill){
+
+        }
+    if(doFill){
+         MainWindow::goFill(ev->pos().x(),ev->pos().y());
+    }
+}
+
 
 //Loads the bitmap into the program
 
@@ -139,22 +176,8 @@ void MainWindow::on_Load_Image_clicked()
     imageqt.load(filename);
 
     MainWindow::bmpToWork.Read(filename.toStdString().c_str());
-    Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
-        int i = 0;
-        for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
-            for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
+   vertRot();
 
-                temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
-
-            }
-            i++;
-        }
-
-        MainWindow::bmpToWork = temp;
-        MainWindow::unedit = temp;
-
-    ui->Image_lbl->resize(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
-    ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
 }
 
 //Saves the image in a directory
@@ -170,19 +193,7 @@ void MainWindow::on_Save_image_clicked()
 
 
     if(!filename.empty()){
-        Image temp =Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
-            int i = 0;
-            for(int y =MainWindow::bmpToWork.height()-1;y>=0;y-- ){
-                for(int x =0;x<MainWindow::bmpToWork.width()-1;x++ ){
-
-                    temp.SetColor(MainWindow::bmpToWork.GetColor(x,i),x,y);
-
-                }
-                i++;
-            }
-
-            MainWindow::bmpToWork = temp;
-            MainWindow::unedit = temp;
+        vertRot();
         MainWindow::bmpToWork.Export(filename.c_str());
         QMessageBox warning;
         warning.setText("Imagen guardada");
@@ -297,11 +308,6 @@ void MainWindow::on_Errase_clicked()
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
-    MainWindow::Vert_Rot();
-}
-
 
 void MainWindow::on_Fill_clicked()
 {
@@ -310,5 +316,29 @@ void MainWindow::on_Fill_clicked()
         }else{
             MainWindow::doFill = true;
         }
+}
+
+
+void MainWindow::on_VertFlip_clicked()
+{
+    std::string flipType = ui->flipType->currentText().toStdString();
+    if(flipType == "Vertical"){
+        vertRot();
+    }
+    if(flipType == "Horizontal"){
+        horRot();
+    }
+    if(flipType == "Rotate"){
+        rightRot();
+    }
+}
+
+
+void MainWindow::on_doFilter_clicked()
+{
+    std::string filter = ui->Filters->currentText().toStdString();
+    if(filter=="grayscale"){
+        grayScale();
+    }
 }
 

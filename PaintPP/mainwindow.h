@@ -26,13 +26,17 @@ public:
     Color paintColor;
     int brush;
 
-    void Vert_Rot();
-    void Hort_Rot();
+    void vertRot();
+    void horRot();
+    void rightRot();
 
     void goFill(int x, int y);
     void refreshDisplay();
 
+    void grayScale();
+
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void mousePressEvent(QMouseEvent *ev) override;
 private slots:
     void on_Load_Image_clicked();
 
@@ -48,12 +52,13 @@ private slots:
 
     void on_horizontalSlider_sliderReleased();
 
-
     void on_Errase_clicked();
 
-    void on_pushButton_clicked();
-
     void on_Fill_clicked();
+
+    void on_VertFlip_clicked();
+
+    void on_doFilter_clicked();
 
 private:
     Ui::MainWindow *ui;
