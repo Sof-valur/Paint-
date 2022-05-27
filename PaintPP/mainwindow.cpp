@@ -88,12 +88,22 @@ void MainWindow::rightRot()
 
 }
 
+void MainWindow::goDelete(int x, int y)
+{
+    BFS bfsOBJ;
+
+    MainWindow::bmpToWork = bfsOBJ.bfs_delete(MainWindow::bmpToWork,MainWindow::unedit,positions(x,y));
+    MainWindow::unedit = MainWindow::bmpToWork;
+    MainWindow::refreshDisplay();
+    doFill = false;
+    ui->Fill->setCheckState(Qt::Unchecked);
+}
+
 void MainWindow::goFill(int x, int y)
 {
     BFS bfsOBJ;
 
     MainWindow::bmpToWork = bfsOBJ.flood_fill(MainWindow::bmpToWork,positions(x,y),MainWindow::paintColor);
-    qDebug()<<"after bfs"<<"\n";
     MainWindow::unedit = MainWindow::bmpToWork;
     MainWindow::refreshDisplay();
     doFill = false;
@@ -123,10 +133,53 @@ void MainWindow::refreshDisplay()
 
 void MainWindow::grayScale()
 {
+
     Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
     for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
         for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
-            temp.SetColor(Color((MainWindow::bmpToWork.GetColor(x,y).r*0.3),(MainWindow::bmpToWork.GetColor(x,y).g*0.59),(MainWindow::bmpToWork.GetColor(x,y).b*0.11)),x,y);
+            Color tempCol = MainWindow::bmpToWork.GetColor(x,y);
+            temp.SetColor(Color((tempCol.r*0.3+tempCol.g*0.59+tempCol.b*0.11),(tempCol.r*0.3+tempCol.g*0.59+tempCol.b*0.11),(tempCol.r*0.3+tempCol.g*0.59+tempCol.b*0.11)),x,y);
+        }
+    }
+    MainWindow::bmpToWork = temp;
+    refreshDisplay();
+}
+
+void MainWindow::negative()
+{
+
+    Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+    for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
+        for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
+            Color tempCol = MainWindow::bmpToWork.GetColor(x,y);
+            temp.SetColor(Color((1-tempCol.r),(1-tempCol.g),(1-tempCol.b)),x,y);
+        }
+    }
+    MainWindow::bmpToWork = temp;
+    refreshDisplay();
+}
+
+void MainWindow::psycho()
+{
+    Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+        for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
+            for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
+                Color tempCol = MainWindow::bmpToWork.GetColor(x,y);
+                temp.SetColor(Color((tempCol.r/0.3),(tempCol.g/0.59),(tempCol.b/0.11)),x,y);
+            }
+        }
+        MainWindow::bmpToWork = temp;
+        refreshDisplay();
+}
+
+void MainWindow::sepia()
+{
+
+    Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+    for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
+        for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
+            Color tempCol = MainWindow::bmpToWork.GetColor(x,y);
+            temp.SetColor(Color((tempCol.r*0.0393+tempCol.g*0.0769+tempCol.b*0.0189),(tempCol.r*0.0349+tempCol.g*0.0686+tempCol.b*0.0131),(tempCol.r*0.0272+tempCol.g*0.0534+tempCol.b*0.000131)),x,y);
         }
     }
     MainWindow::bmpToWork = temp;
@@ -155,11 +208,17 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
    }
 }
 
+// Checks if the mouse is clicked
+
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
+    Color tempWork =bmpToWork.GetColor(ev->pos().x(),ev->pos().y()) ;
+    Color tempUnedit =unedit.GetColor(ev->pos().x(),ev->pos().y()) ;
     if(doErrase&&doFill){
-
+        if(tempWork.r!=tempUnedit.r || tempWork.g !=tempUnedit.g || tempWork.b!=tempUnedit.b){
+        goDelete(ev->pos().x(),ev->pos().y());
         }
+    }
     if(doFill){
          MainWindow::goFill(ev->pos().x(),ev->pos().y());
     }
@@ -176,6 +235,7 @@ void MainWindow::on_Load_Image_clicked()
     imageqt.load(filename);
 
     MainWindow::bmpToWork.Read(filename.toStdString().c_str());
+    MainWindow::unedit = MainWindow::bmpToWork;
    vertRot();
 
 }
@@ -250,7 +310,7 @@ void MainWindow::on_New_Image_clicked()
 
 
         MainWindow::bmpToWork.Export("new_piporin.bmp");
-
+        MainWindow::unedit = MainWindow::bmpToWork;
         imageqt.load("new_piporin.bmp");
 
         //MainWindow::piporin.Read("new_piporin.bmp");
@@ -339,6 +399,15 @@ void MainWindow::on_doFilter_clicked()
     std::string filter = ui->Filters->currentText().toStdString();
     if(filter=="grayscale"){
         grayScale();
+    }
+    if(filter=="negative"){
+        negative();
+    }
+    if(filter=="psycho"){
+        psycho();
+    }
+    if(filter=="sepia"){
+        sepia();
     }
 }
 

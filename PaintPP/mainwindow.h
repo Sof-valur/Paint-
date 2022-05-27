@@ -30,10 +30,14 @@ public:
     void horRot();
     void rightRot();
 
+    void goDelete(int x, int y);
     void goFill(int x, int y);
     void refreshDisplay();
 
     void grayScale();
+    void negative();
+    void psycho();
+    void sepia();
 
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;

@@ -280,6 +280,21 @@ border-color: rgb(46, 52, 54);</string>
          <string>grayscale</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>negative</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>psycho</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>sepia</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="14" column="1">
@@ -291,54 +306,8 @@ border-color: rgb(46, 52, 54);</string>
      </item>
     </layout>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>550</y>
-      <width>84</width>
-      <height>67</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Filters</string>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <property name="movable">
-    <bool>false</bool>
-   </property>
-   <property name="floatable">
-    <bool>false</bool>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>BottomToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
  </widget>
  <resources/>
  <connections/>
