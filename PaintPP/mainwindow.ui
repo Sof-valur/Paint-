@@ -72,48 +72,23 @@ background-color: rgb(136, 138, 133);
 border-color: rgb(46, 52, 54);</string>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="5" column="0" rowspan="2" colspan="2">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Brush Size</string>
-         </property>
-        </widget>
+     <item row="13" column="0">
+      <widget class="QComboBox" name="flipType">
+       <item>
+        <property name="text">
+         <string extracomment="Flips the canvas in the y axis">Vertical</string>
+        </property>
        </item>
        <item>
-        <widget class="QSlider" name="horizontalSlider">
-         <property name="maximum">
-          <number>5</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
+        <property name="text">
+         <string extracomment="Flips the canvas in the x axis">Horizontal</string>
+        </property>
        </item>
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QPlainTextEdit" name="plainTextEdit">
-         <property name="maximumSize">
-          <size>
-           <width>35</width>
-           <height>35</height>
-          </size>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="plainText">
-          <string notr="true"/>
-         </property>
-        </widget>
+       <item>
+        <property name="text">
+         <string extracomment="Rotates the canvas sideways">Rotate</string>
+        </property>
        </item>
-      </layout>
-     </item>
-     <item row="3" column="0" colspan="2">
-      <widget class="QPushButton" name="Color_bttn">
-       <property name="text">
-        <string>Select Color</string>
-       </property>
       </widget>
      </item>
      <item row="13" column="1">
@@ -125,43 +100,6 @@ border-color: rgb(46, 52, 54);</string>
        </property>
        <property name="text">
         <string>Flip</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="0" colspan="2">
-      <widget class="QCheckBox" name="Errase">
-       <property name="text">
-        <string>Errase</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0" colspan="2">
-      <widget class="QCheckBox" name="Draw">
-       <property name="text">
-        <string>Draw</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Minimum</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="12" column="0" colspan="2">
-      <widget class="QCheckBox" name="Fill">
-       <property name="text">
-        <string>Fill</string>
        </property>
       </widget>
      </item>
@@ -254,24 +192,93 @@ border-color: rgb(46, 52, 54);</string>
        </layout>
       </widget>
      </item>
-     <item row="13" column="0">
-      <widget class="QComboBox" name="flipType">
-       <item>
-        <property name="text">
-         <string extracomment="Flips the canvas in the y axis">Vertical</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="Flips the canvas in the x axis">Horizontal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string extracomment="Rotates the canvas sideways">Rotate</string>
-        </property>
-       </item>
+     <item row="14" column="1">
+      <widget class="QPushButton" name="doFilter">
+       <property name="text">
+        <string>Filter</string>
+       </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Minimum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="11" column="0" colspan="2">
+      <widget class="QCheckBox" name="Errase">
+       <property name="text">
+        <string>Errase</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="2">
+      <widget class="QCheckBox" name="Draw">
+       <property name="text">
+        <string>Draw</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QPushButton" name="Color_bttn">
+       <property name="text">
+        <string>Select Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="0" colspan="2">
+      <widget class="QCheckBox" name="Fill">
+       <property name="text">
+        <string>Fill</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" rowspan="2" colspan="2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Brush Size</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="maximum">
+          <number>5</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QPlainTextEdit" name="plainTextEdit">
+         <property name="maximumSize">
+          <size>
+           <width>35</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="plainText">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item row="14" column="0">
       <widget class="QComboBox" name="Filters">
@@ -292,16 +299,9 @@ border-color: rgb(46, 52, 54);</string>
        </item>
        <item>
         <property name="text">
-         <string>sepia</string>
+         <string>magmatic</string>
         </property>
        </item>
-      </widget>
-     </item>
-     <item row="14" column="1">
-      <widget class="QPushButton" name="doFilter">
-       <property name="text">
-        <string>Filter</string>
-       </property>
       </widget>
      </item>
     </layout>

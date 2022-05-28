@@ -22,9 +22,11 @@ public:
     Image bmpToWork;
     Image unedit;
     QImage imageqt;
-    bool doDraw, doErrase, doFill;
+    bool doDraw, doErrase, doFill, doLine;
     Color paintColor;
     int brush;
+
+    positions startPos;
 
     void vertRot();
     void horRot();
@@ -37,10 +39,11 @@ public:
     void grayScale();
     void negative();
     void psycho();
-    void sepia();
+    void magmatic();
 
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;
+    void mouseReleaseEvent(QMouseEvent *ev) override;
 private slots:
     void on_Load_Image_clicked();
 
@@ -63,6 +66,8 @@ private slots:
     void on_VertFlip_clicked();
 
     void on_doFilter_clicked();
+
+    void on_Line_clicked();
 
 private:
     Ui::MainWindow *ui;

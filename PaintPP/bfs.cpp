@@ -134,8 +134,12 @@ Image BFS::bfs_delete(Image toDelete, Image unedit, positions start)
 }
 
 
+positions::positions()
+    :x(0),y(0)
+{
 
-positions::positions(int x, int y)
+}
+positions::positions(int x,int y)
     :x(x),y(y)
 {
 

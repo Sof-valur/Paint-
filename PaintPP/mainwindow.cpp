@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     doDraw = false;
     doErrase = false;
     doFill =false;
+    doLine = false;
+
     MainWindow::paintColor = Color(0,0,0);
     MainWindow::brush = 0;
     ui->plainTextEdit->setPlainText(0);
@@ -172,14 +174,18 @@ void MainWindow::psycho()
         refreshDisplay();
 }
 
-void MainWindow::sepia()
+void MainWindow::magmatic()
 {
 
     Image temp = Image(MainWindow::bmpToWork.width(),MainWindow::bmpToWork.height());
+
     for(int y = 0;y<MainWindow::bmpToWork.height()-1;y++){
         for(int x = 0;x<=MainWindow::bmpToWork.width()-1;x++){
             Color tempCol = MainWindow::bmpToWork.GetColor(x,y);
-            temp.SetColor(Color((tempCol.r*0.0393+tempCol.g*0.0769+tempCol.b*0.0189),(tempCol.r*0.0349+tempCol.g*0.0686+tempCol.b*0.0131),(tempCol.r*0.0272+tempCol.g*0.0534+tempCol.b*0.000131)),x,y);
+            int tempR = ((tempCol.r*10)*0.393+(tempCol.g*10)*0.769+(tempCol.b*10)*0.189);
+            int tempG = ((tempCol.r*10)*0.349+(tempCol.g*10)*0.686+(tempCol.b*10)*0.168);
+            int tempB = ((tempCol.r*10)*0.272+(tempCol.g*10)*0.534+(tempCol.b*10)*0.131);
+            temp.SetColor(Color((tempR/10),(tempG/10),(tempB/10)),x,y);
         }
     }
     MainWindow::bmpToWork = temp;
@@ -194,7 +200,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
    //qDebug()<<"drawing in"<<ev->pos().x()<<","<<ev->pos().y();
 
    if(doDraw ||  doErrase){
-   if(ev->pos().x()<imageqt.width() && ev->pos().x()>0 && ev->pos().y()<imageqt.height() && ev->pos().y()>0){
+   if(ev->pos().x()<bmpToWork.width() && ev->pos().x()>0 && ev->pos().y()<bmpToWork.height() && ev->pos().y()>0){
        MainWindow::set_color(ev->pos().x(),ev->pos().y());
        ui->Image_lbl->setPixmap(QPixmap::fromImage(imageqt));
        QWidget::mouseMoveEvent(ev);
@@ -212,6 +218,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
+    startPos = positions(ev->pos().x(),ev->pos().y());
+
     Color tempWork =bmpToWork.GetColor(ev->pos().x(),ev->pos().y()) ;
     Color tempUnedit =unedit.GetColor(ev->pos().x(),ev->pos().y()) ;
     if(doErrase&&doFill){
@@ -222,6 +230,25 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     if(doFill){
          MainWindow::goFill(ev->pos().x(),ev->pos().y());
     }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if(doLine){
+        if(ev->pos().x() == startPos.x){
+
+            for(int x = startPos.x;x<ev->pos().x();x++){
+                set_color(x,ev->pos().y());
+            }
+
+        }if(ev->pos().y() == startPos.y){
+            for(int y = startPos.y;y<ev->pos().y();y++){
+                set_color(ev->pos().x(),y);
+            }
+        }
+        ui->Fill->setCheckState(Qt::Unchecked);
+    }
+
 }
 
 
@@ -273,11 +300,14 @@ void MainWindow::set_color(int x, int y)
 {
     if(MainWindow::doErrase){
         for(int tempy =y;tempy<=y+MainWindow::brush;tempy++ ){
+            if(!y+brush>bmpToWork.height()){
             for(int tempx =x;tempx<=x+MainWindow::brush;tempx++ ){
-
+            if(!x+brush>bmpToWork.width()){
                 imageqt.setPixelColor(tempx,tempy,QColor((int)255*MainWindow::unedit.GetColor(tempx,tempy).r,(int)255*MainWindow::unedit.GetColor(tempx,tempy).g,(int)255*MainWindow::unedit.GetColor(tempx,tempy).b));
                 MainWindow::bmpToWork.SetColor(Color(MainWindow::unedit.GetColor(tempx,tempy).r,MainWindow::unedit.GetColor(tempx,tempy).g,MainWindow::unedit.GetColor(tempx,tempy).b),tempx,tempy);
+            }
 
+}
     }
         }
     }else{
@@ -406,8 +436,18 @@ void MainWindow::on_doFilter_clicked()
     if(filter=="psycho"){
         psycho();
     }
-    if(filter=="sepia"){
-        sepia();
+    if(filter=="magmatic"){
+        magmatic();
     }
+}
+
+
+void MainWindow::on_Line_clicked()
+{
+    if(MainWindow::doLine){
+            MainWindow::doLine = false;
+        }else{
+            MainWindow::doLine = true;
+        }
 }
 
