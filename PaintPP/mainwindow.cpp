@@ -218,19 +218,22 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
-    startPos = positions(ev->pos().x(),ev->pos().y());
+    if(!bmpToWork.empty()){
+        startPos = positions(ev->pos().x(),ev->pos().y());
 
-    Color tempWork =bmpToWork.GetColor(ev->pos().x(),ev->pos().y()) ;
-    Color tempUnedit =unedit.GetColor(ev->pos().x(),ev->pos().y()) ;
-    if(doErrase&&doFill){
-        if(tempWork.r!=tempUnedit.r || tempWork.g !=tempUnedit.g || tempWork.b!=tempUnedit.b){
-        goDelete(ev->pos().x(),ev->pos().y());
+        Color tempWork =bmpToWork.GetColor(ev->pos().x(),ev->pos().y()) ;
+        Color tempUnedit =unedit.GetColor(ev->pos().x(),ev->pos().y()) ;
+        if(doErrase&&doFill){
+            if(tempWork.r!=tempUnedit.r || tempWork.g !=tempUnedit.g || tempWork.b!=tempUnedit.b){
+            goDelete(ev->pos().x(),ev->pos().y());
+            }
+        }
+        if(doFill){
+             MainWindow::goFill(ev->pos().x(),ev->pos().y());
         }
     }
-    if(doFill){
-         MainWindow::goFill(ev->pos().x(),ev->pos().y());
     }
-}
+
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
@@ -442,12 +445,5 @@ void MainWindow::on_doFilter_clicked()
 }
 
 
-void MainWindow::on_Line_clicked()
-{
-    if(MainWindow::doLine){
-            MainWindow::doLine = false;
-        }else{
-            MainWindow::doLine = true;
-        }
-}
+
 

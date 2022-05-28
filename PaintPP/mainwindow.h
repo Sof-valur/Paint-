@@ -67,7 +67,6 @@ private slots:
 
     void on_doFilter_clicked();
 
-    void on_Line_clicked();
 
 private:
     Ui::MainWindow *ui;

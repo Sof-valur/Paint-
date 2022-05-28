@@ -40,6 +40,15 @@ Image::~Image()
 
 }
 
+bool Image::empty()
+{
+    if(m_colors.empty()){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 //Returns a Color struct from the loaded bitmap at x,y pixel
 
 Color Image::GetColor(int x, int y) const
